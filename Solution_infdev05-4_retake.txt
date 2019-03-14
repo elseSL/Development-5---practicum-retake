@@ -1,0 +1,66 @@
+// TODO 1 (0.5 point)
+    public DbSet<School> Schools { get; set; }
+    public DbSet<Student> Students { get; set; }
+------------------------
+ // TODO 2 (0.5 point) 
+     // TODO 2 (0.5 point) 
+            modelBuilder.Entity<Student>()
+            .HasOne(s =>  s.School)
+            .WithMany(st => st.Students)
+            .HasForeignKey(st=> st.SchoolId)
+            .OnDelete(DeleteBehavior.Cascade);
+            
+          //OR
+            modelBuilder.Entity<School>()
+            .HasMany(st =>  st.Students)
+            .WithOne(s => s.School)
+            .HasForeignKey(st => st.SchoolId)
+            .OnDelete(DeleteBehavior.Cascade);
+------------------------            
+ // TODO 3 (0.5 point)
+    public List<Student> Students { get; set; }
+------------------------
+// TODO 4 (0.5 point)
+    public int SchoolId { get; set; }
+    public School School { get; set; }
+------------------------
+ // TODO 5 (2 points)   
+    var school_students = (from s in _context.Schools
+                        let students = (from c in _context.Students
+                                    where c.SchoolId == s.Id
+                                    select new { Id = c.Id, Name = c.Name, Code = c.Code })
+                        select new {Id=s.Id, Name=s.Name, Students=students.ToList()}).ToList();
+------------------------
+ // TODO 6 (1 point)
+    var school = _context.Schools.FirstOrDefault(b => b.Id == school_id);
+    
+    if(school == null){
+        // return NotFound();
+    }
+    school.Name = school_name;
+    _context.SaveChanges();
+    // return Ok(school);
+------------------------
+ // TODO 7 (0.5 point)
+    let address = `SchoolStudents/UpdateSchoolName/${school.id}/${new_name}`
+------------------------
+// TODO 8 (1 point)
+    type SchoolsComponentState = {schools_and_students:Models.School[] | "loading" | "error"}
+------------------------
+// TODO 9 (1 point)
+    getAll().then(bs => this.setState({...this.state, schools_and_students:bs}))
+            .catch(_ => this.setState({...this.state, schools_and_students:"error"}))
+------------------------
+// TODO 10 (0.5 point)
+    type AutoComponentProps = {student:Models.Student}
+------------------------
+// TODO 11 (2 points)
+    constructor(props: AutoComponentProps, context: any) {
+        super(props, context);
+    }
+    public render() {
+        return <div>
+                Student name: {this.props.student.name}
+            </div>
+    }
+------------------------
